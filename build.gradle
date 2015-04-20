@@ -1,0 +1,103 @@
+buildscript{
+	repositories {
+    ivy {
+      url 'http://fandianpf.github.io/ivyRepo'
+    }
+    maven {
+      name 'JFrog OSS snapshot repo'
+      url 'https://oss.jfrog.org/oss-release-local/'
+    }
+    mavenCentral()
+
+  }
+
+  dependencies {
+    classpath 'me.champeau.gradle:antlr4-gradle-plugin:0.1'
+    classpath 'org.fandianpf:antlr4-gradle-regressionTestPlugin:0.3'
+  }
+
+}
+project(':grammar'){
+
+	apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'me.champeau.gradle.antlr4'
+    apply plugin: 'antlr4test'
+    
+	sourceSets {
+    main {
+        java {
+            srcDir 'src/main/antlr4'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+	ext.versions = [
+        slf4j: "1.7.2",
+        logback: "1.0.9",
+        junit: "4.10",
+        antlr: '4.2.2'
+	]
+
+	repositories {
+	  ivy {
+      	url 'http://fandianpf.github.io/ivyRepo/'
+      }
+	  mavenCentral()
+	  jcenter()
+	}
+	
+	dependencies {
+	    compile (group: 'org.fandianpf', name:'antlr4-regressionTestRig', version:'0.3')
+	    compile group: "org.antlr", name: "antlr4", version: versions.antlr
+	    compile group: "org.antlr", name: "antlr4-runtime", version: versions.antlr
+	}
+	
+	
+	antlr4 {
+  
+	  extraArgs = ["-package", "com.wesovi.lang.grammar"]
+	  
+	  // make the Java compile task depend on the antlr4 task
+	  compileJava.dependsOn antlr4
+	
+	  // add the generated source files to the list of java sources
+	  sourceSets.main.java.srcDirs += antlr4.output
+	
+	  // add antlr4 to classpath
+	  configurations {
+	     compile.extendsFrom antlr4
+	  }
+	}
+		
+	antlr4test {
+  
+	  grammarPackage = 'com.wesovi.lang.grammar'
+	  grammarName    = 'PipeLineIt'
+	  startRuleName  = 'file'
+	  trace          = true
+	  testDocs       = fileTree(dir: 'src/test/resources',include: 'pipelines/*.pipeline')
+	
+	  source = antlr4.source
+	  
+	  antlr4test.getOutputs().upToDateWhen {
+	    false
+	  }
+	  
+	                            
+	  dependsOn compileJava
+	  
+	  antlr4test.classpath(files("$buildDir/classes/main"))
+	  
+	  configurations {
+	    compile.extendsFrom antlr4test
+	  }
+	}
+	
+	test {
+	  dependsOn antlr4test
+	}
+}
