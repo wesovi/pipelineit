@@ -1,3 +1,35 @@
-#sample of grammar	
-require email
-require coche
+#java
+
+@import 'error'
+type 'microservice'
+{
+
+}
+
+JSON='application/json'
+
+GET '/person/{id}/
+{
+	- [('Content-Type',JSON)]
+	- ?name*:String&firstName:String&age:Int
+	headers{
+		('Content-Type','application/json'),
+		('Accept',['application/json','application/xml']) 
+	},
+	params{
+		name*:String,
+		age+:Int,
+	},
+	request{
+	 	body{
+	 		name:String,
+	 		firstName:String (minLength=3,maxLength=10)
+	 		person{
+	 			fullName:String,
+	 			age:Date,	
+	 		}
+	 	}	
+	}
+
+}
+

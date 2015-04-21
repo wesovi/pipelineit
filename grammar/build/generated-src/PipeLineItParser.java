@@ -20,7 +20,7 @@ public class PipeLineItParser extends Parser {
 		INTEGER=8;
 	public static final String[] tokenNames = {
 		"<INVALID>", "'require'", "WS", "ID", "DASHBRACK", "'task'", "'job'", 
-		"'\n'", "INTEGER", "WORD", "WHITESPACE", "COMMENT", "JOB_DETAIL", "REQUIRE_DETAIL"
+		"'[\n]'", "INTEGER", "WORD", "WHITESPACE", "COMMENT", "JOB_DETAIL", "REQUIRE_DETAIL"
 	};
 	public static final int
 		RULE_dependendies = 0, RULE_dependency = 1, RULE_tasks = 2, RULE_task = 3, 

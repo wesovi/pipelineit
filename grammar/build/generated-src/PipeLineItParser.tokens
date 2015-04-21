@@ -14,4 +14,4 @@ INTEGER=8
 'task'=5
 'job'=6
 'require'=1
-'\n'=7
+'[\n]'=7
